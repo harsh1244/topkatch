@@ -183,7 +183,46 @@ app.post('/send-location', (req, res) => {
 });
 
 
-
+app.post('/like', (req, res) => {
+  var user = {
+    "_id": req.body.id,
+    "other_user": req.body.other
+  };
+  // check if exists
+  db.collection('users').findOne({
+    "_id": user.other_user
+  }, function(err, result) {
+    if (err) console.log(err);
+    else {
+      if (result) {
+        // update database
+        var matches_copy = result.matches.slice()
+        if (!matches_copy.includes(user._id)) {
+          matches_copy.push(user._id);
+        }
+        db.collection('users').update({
+          "_id": user.other_user
+        }, {
+          $set: {
+            // TODO append to the array of matches:
+            "matches": matches_copy
+          }
+        }, {
+          w: 1
+        }, (err, result) => {
+          if (err) console.log(err);
+          else {
+            console.log('updated database');
+            // res.send("liked! ;)");
+          }
+        });
+      } else {
+        // res.send("this user does not exist!");
+        console.log("user does not exist in the database");
+      }
+    }
+  });
+});
 
 
 
