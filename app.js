@@ -34,3 +34,7 @@ MongoClient.connect('mongodb://api:cs252lab6@ds119618.mlab.com:19618/vendez-vous
     console.log('listening on 3702')
   })
 })
+
+app.get('/', function(req, res) {
+  res.send('vendez-vous api')
+});
