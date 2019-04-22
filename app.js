@@ -296,6 +296,51 @@ app.get('/get-nearby', (req, res) => {
 });
 
 
+function isNearby(user1, user2, range, unit) {
+  if (distance(parseFloat(user1.location.latitude), parseFloat(user1.location.longitude), parseFloat(user2.location.latitude), parseFloat(user2.location.longitude), unit) <= parseInt(range)) { // 5 mile radius
+    return true
+  }
+  return false
+}
+
+function distance(lat1, lon1, lat2, lon2, unit) {
+  var radlat1 = Math.PI * lat1 / 180
+  var radlat2 = Math.PI * lat2 / 180
+  var theta = lon1 - lon2
+  var radtheta = Math.PI * theta / 180
+  var dist = Math.sin(radlat1) * Math.sin(radlat2) + Math.cos(radlat1) * Math.cos(radlat2) * Math.cos(radtheta);
+  dist = Math.acos(dist)
+  dist = dist * 180 / Math.PI
+  dist = dist * 60 * 1.1515
+  if (unit == "K") {
+    dist = dist * 1.609344
+  }
+  if (unit == "N") {
+    dist = dist * 0.8684
+  }
+  return dist
+}
+
+// catch 404 and forward to error handler
+app.use(function(req, res, next) {
+  next(createError(404));
+});
+
+// error handler
+app.use(function(err, req, res, next) {
+  // set locals, only providing error in development
+  res.locals.message = err.message;
+  res.locals.error = req.app.get('env') === 'development' ? err : {};
+
+  // render the error page
+  res.status(err.status || 500);
+  res.render('error');
+});
+
+module.exports = app;
+
+
+
 
 
 
