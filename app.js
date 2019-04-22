@@ -225,6 +225,77 @@ app.post('/like', (req, res) => {
 });
 
 
+app.get('/get-nearby', (req, res) => {
+  // console.log(req);
+  var user = {
+    "_id": req.headers.id
+  };
+  var range;
+  var unit;
+  // input sanitization
+  if (req.headers.range) {
+    range = parseInt(req.headers.range)
+  }
+  if (req.headers.unit) {
+    unit = req.headers.unit
+  }
+  // defaults
+  if (unit != "M" || unit != "K") {
+    unit = "M"
+  }
+  if (!(range > 0 && range < 15)) {
+    range = 5
+  }
+  // check if exists
+  db.collection('users').findOne({
+    "_id": user._id
+  }, function(err, result) {
+    if (err) console.log(err);
+    else {
+      if (result) {
+        // TODO get nearby users and if the 2 users have matched
+        // console.log(result)
+        var users_list = []
+        db.collection('users').find({}).toArray(function(err1, doc) {
+          // console.log(doc)
+          for (i = 0; i < doc.length; i++) {
+            if (doc[i]._id != result._id && isNearby(doc[i], result, range, unit)) {
+              // console.log(doc)
+              var toSend = {
+                "id": doc[i]._id,
+                "user_name": doc[i].user_name,
+                "link": doc[i].link,
+                "email": doc[i].email,
+                "picture": doc[i].picture,
+                "bio": doc[i].bio,
+                "interests": doc[i].interests,
+                "match": false
+              };
+              if (result.matches.includes(doc[i]._id) && doc[i].matches.includes(result._id)) {
+                toSend.match = true
+              }
+
+              users_list.push(toSend);
+            }
+            console.log('response sent');
+          }
+          if (users_list.length > 0) {
+            res.send(users_list);
+          } else {
+            // res.send('sorry nobody\'s using the app near you');
+            res.send(users_list);
+          }
+        });
+
+      } else {
+        console.log("user does not exist in the database");
+        // res.send("this user does not exist!");
+      }
+    }
+  });
+});
+
+
 
 
 
