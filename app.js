@@ -76,6 +76,44 @@ app.post('/user-login', (req, res) => {
 });
 
 
+app.post('/update-profile', (req, res) => {
+  var user = {
+    "_id": req.body.id,
+    "bio": req.body.bio,
+    "interests": req.body.interests
+  };
+  // check if exists
+  db.collection('users').findOne({
+    "_id": user._id
+  }, function(err, result) {
+    if (err) console.log(err);
+    else {
+      if (result) {
+        // update database
+        db.collection('users').update({
+          "_id": req.body.id
+        }, {
+          $set: {
+            "bio": user.bio,
+            "interests": user.interests
+          }
+        }, {
+          w: 1
+        }, (err, result) => {
+          if (err) console.log(err);
+          else {
+            console.log('updated database');
+            // res.send("user profile updated");
+          }
+        });
+      } else {
+        // res.send("user does not exist!");
+        console.log("user does not exist in the database");
+      }
+    }
+  });
+});
+
 
 
 
