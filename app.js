@@ -142,7 +142,45 @@ app.get('/get-profile', (req, res) => {
 
 
 
-
+app.post('/send-location', (req, res) => {
+  // console.log(req.body);
+  var user = {
+    "_id": req.body.id,
+    "location": {
+      "latitude": req.body.latitude,
+      "longitude": req.body.longitude
+    }
+  };
+  // check if exists
+  db.collection('users').findOne({
+    "_id": user._id
+  }, function(err, result) {
+    if (err) console.log(err);
+    else {
+      if (result) {
+        // update database
+        db.collection('users').update({
+          "_id": user._id
+        }, {
+          $set: {
+            "location": user.location
+          }
+        }, {
+          w: 1
+        }, (err, result) => {
+          if (err) console.log(err);
+          else {
+            console.log('updated database');
+            // res.send("user location updated");
+          }
+        });
+      } else {
+        // res.send("user does not exist!");
+        console.log("user does not exist in the database");
+      }
+    }
+  });
+});
 
 
 
