@@ -36,7 +36,7 @@ MongoClient.connect('mongodb://api:cs252lab6@ds119618.mlab.com:19618/vendez-vous
 })
 
 app.get('/', function(req, res) {
-  res.send('vendez-vous api')
+  res.send('top-katch api')
 });
 
 app.post('/user-login', (req, res) => {
@@ -338,23 +338,3 @@ app.use(function(err, req, res, next) {
 });
 
 module.exports = app;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
