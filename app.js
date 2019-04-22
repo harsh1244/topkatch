@@ -30,8 +30,8 @@ MongoClient.connect('mongodb://api:cs252lab6@ds119618.mlab.com:19618/vendez-vous
   if (err) return console.log(err)
   db = client.db('vendez-vous-users')
   console.log('connected to mongodb')
-  app.listen(3702, () => {
-    console.log('listening on 3702')
+  app.listen(8080, () => {
+    console.log('listening on 8080')
   })
 })
 
